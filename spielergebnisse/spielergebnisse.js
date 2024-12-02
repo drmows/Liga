@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return { points1, points2 };
     }
 
-    function submitMatch() {
+    async function submitMatch() {
         console.log("submitMatch function triggered");
         const player1Name = document.getElementById("player1").value;
         const player2Name = document.getElementById("player2").value;
@@ -93,111 +93,117 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Player 2:", player2Name);
         console.log("Winner:", winnerName);
 
-        fetch('../data/players.json')
-            .then(response => response.json())
-            .then(data => {
-                const players = data.players;
-                const player1 = players.find(player => player.name === player1Name);
-                const player2 = players.find(player => player.name === player2Name);
-                const initialMMR1 = player1.points;
-                const initialMMR2 = player2.points;
+        try {
+            const playersResponse = await fetch('../data/players.json');
+            const playersData = await playersResponse.json();
+            const players = playersData.players;
 
-                const result1 = winnerName === player1Name ? 1 : 0;
-                const result2 = winnerName === player2Name ? 1 : 0;
+            const player1 = players.find(player => player.name === player1Name);
+            const player2 = players.find(player => player.name === player2Name);
+            const initialMMR1 = player1.points;
+            const initialMMR2 = player2.points;
 
-                const { points1, points2 } = calculateMMRChange(initialMMR1, initialMMR2, result1, result2);
+            const result1 = winnerName === player1Name ? 1 : 0;
+            const result2 = winnerName === player2Name ? 1 : 0;
 
-                player1.points += points1;
-                player2.points += points2;
-                player1.destructionPoints += destructionPoints1;
-                player2.destructionPoints += destructionPoints2;
-                player1.games++;
-                player2.games++;
+            const { points1, points2 } = calculateMMRChange(initialMMR1, initialMMR2, result1, result2);
 
-                if (winnerName === player1Name) {
-                    player1.wins++;
-                    player2.losses++;
-                } else {
-                    player1.losses++;
-                    player2.wins++;
-                }
+            player1.points += points1;
+            player2.points += points2;
+            player1.destructionPoints += destructionPoints1;
+            player2.destructionPoints += destructionPoints2;
+            player1.games++;
+            player2.games++;
 
-                player1.winrate = (player1.wins / player1.games) * 100;
-                player2.winrate = (player2.wins / player2.games) * 100;
+            if (winnerName === player1Name) {
+                player1.wins++;
+                player2.losses++;
+            } else {
+                player1.losses++;
+                player2.wins++;
+            }
 
-                console.log("Updated Player 1 MMR:", player1.points);
-                console.log("Updated Player 2 MMR:", player2.points);
+            player1.winrate = (player1.wins / player1.games) * 100;
+            player2.winrate = (player2.wins / player2.games) * 100;
 
-                const newResult = {
-                    player1: player1Name,
-                    player2: player2Name,
-                    initialMMR1,
-                    initialMMR2,
-                    points1,
-                    points2,
-                    destructionPoints1,
-                    destructionPoints2,
-                    winner: winnerName
-                };
+            console.log("Updated Player 1 MMR:", player1.points);
+            console.log("Updated Player 2 MMR:", player2.points);
 
-                console.log("New result:", newResult);
+            const newResult = {
+                player1: player1Name,
+                player2: player2Name,
+                initialMMR1,
+                initialMMR2,
+                points1,
+                points2,
+                destructionPoints1,
+                destructionPoints2,
+                winner: winnerName
+            };
 
-                fetch('../data/results.json')
-                    .then(response => response.json())
-                    .then(resultsData => {
-                        resultsData.results.push(newResult);
-                        return fetch('../data/results.json', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(resultsData)
-                        });
-                    })
-                    .then(() => {
-                        const resultsTable = document.getElementById("results-table").getElementsByTagName('tbody')[0];
-                        const newRow = resultsTable.insertRow();
-                        newRow.innerHTML = `
-                            <td>${player1Name}</td>
-                            <td>${player2Name}</td>
-                            <td>${initialMMR1}</td>
-                            <td>${initialMMR2}</td>
-                            <td>${points1}</td>
-                            <td>${points2}</td>
-                            <td>${destructionPoints1}</td>
-                            <td>${destructionPoints2}</td>
-                            <td style="color: ${winnerName === player1Name ? 'green' : 'red'}">${winnerName}</td>
-                        `;
-                        console.log("New row added to table");
-                    });
+            console.log("New result:", newResult);
+
+            const resultsResponse = await fetch('../data/results.json');
+            const resultsData = await resultsResponse.json();
+            resultsData.results.push(newResult);
+
+            await fetch('../data/results.json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(resultsData)
             });
+
+            const resultsTable = document.getElementById("results-table").getElementsByTagName('tbody')[0];
+            const newRow = resultsTable.insertRow();
+            newRow.innerHTML = `
+                <td>${player1Name}</td>
+                <td>${player2Name}</td>
+                <td>${initialMMR1}</td>
+                <td>${initialMMR2}</td>
+                <td>${points1}</td>
+                <td>${points2}</td>
+                <td>${destructionPoints1}</td>
+                <td>${destructionPoints2}</td>
+                <td style="color: ${winnerName === player1Name ? 'green' : 'red'}">${winnerName}</td>
+            `;
+            console.log("New row added to table");
+        } catch (error) {
+            console.error("Error:", error);
+        }
     }
 
-    function deleteLastResult() {
-        fetch('../data/results.json')
-            .then(response => response.json())
-            .then(resultsData => {
-                if (resultsData.results.length > 0) {
-                    resultsData.results.pop();
-                    return fetch('../data/results.json', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(resultsData)
-                    });
-                }
-            })
-            .then(() => {
+    async function deleteLastResult() {
+        try {
+            const resultsResponse = await fetch('../data/results.json');
+            const resultsData = await resultsResponse.json();
+            if (resultsData.results.length > 0) {
+                resultsData.results.pop();
+                await fetch('../data/results.json', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(resultsData)
+                });
+
                 const resultsTable = document.getElementById("results-table").getElementsByTagName('tbody')[0];
                 if (resultsTable.rows.length > 0) {
                     resultsTable.deleteRow(resultsTable.rows.length - 1);
                 }
-            });
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
     }
 
     document.getElementById("match-form").addEventListener("submit", function(event) {
         event.preventDefault();
         submitMatch();
+    });
+
+    document.getElementById("delete-button").addEventListener("click", function() {
+        deleteLastResult();
     });
 });
