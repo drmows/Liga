@@ -1,11 +1,15 @@
-const connectToDatabase = require('./db');
+const { MongoClient } = require('mongodb');
 
-async function savePlayerResult(player, score) {
-  const db = await connectToDatabase();
-  const collection = db.collection('player_results'); // Ensure this matches your intended collection name
+const uri = 'mongodb+srv://ickwesanders:ZVH7LSLfpftbcd4s@cluster0.khisw.mongodb.net/?retryWrites=true&w=majority';
 
-  const result = await collection.insertOne({ player, score, date: new Date() });
-  console.log(`New result inserted with _id: ${result.insertedId}`);
+let client;
+
+async function connectToDatabase() {
+  if (!client) {
+    client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    await client.connect();
+  }
+  return client.db('YOUR_DATABASE_NAME');
 }
 
-module.exports = savePlayerResult;
+module.exports = connectToDatabase;
