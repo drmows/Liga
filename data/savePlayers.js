@@ -1,4 +1,11 @@
-const savePlayers = require('./db/savePlayers');
+const connectToDatabase = require('./db');
 
-// Aufruf der Funktion zum Speichern der Spieler
-savePlayers().catch(console.error);
+async function savePlayerResult(player, score) {
+  const db = await connectToDatabase();
+  const collection = db.collection('player_results');
+
+  const result = await collection.insertOne({ player, score, date: new Date() });
+  console.log(`New result inserted with _id: ${result.insertedId}`);
+}
+
+module.exports = savePlayerResult;
