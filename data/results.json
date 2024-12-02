@@ -1,3 +1,28 @@
-{
-    "results": []
-  }
+fetch('../data/results.json')
+    .then(response => response.json())
+    .then(resultsData => {
+        resultsData.results.push(newResult);
+        return fetch('../data/results.json', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(resultsData)
+        });
+    })
+    .then(() => {
+        const resultsTable = document.getElementById("results-table").getElementsByTagName('tbody')[0];
+        const newRow = resultsTable.insertRow();
+        newRow.innerHTML = `
+            <td>${player1Name}</td>
+            <td>${player2Name}</td>
+            <td>${initialMMR1}</td>
+            <td>${initialMMR2}</td>
+            <td>${points1}</td>
+            <td>${points2}</td>
+            <td>${destructionPoints1}</td>
+            <td>${destructionPoints2}</td>
+            <td style="color: ${winnerName === player1Name ? 'green' : 'red'}">${winnerName}</td>
+        `;
+        console.log("New row added to table");
+    });
