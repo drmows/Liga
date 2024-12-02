@@ -88,32 +88,32 @@ document.addEventListener("DOMContentLoaded", function () {
         const winnerName = document.getElementById("winner").value;
         const destructionPoints1 = parseInt(document.getElementById("destructionPoints1").value);
         const destructionPoints2 = parseInt(document.getElementById("destructionPoints2").value);
-    
+
         console.log("Player 1:", player1Name);
         console.log("Player 2:", player2Name);
         console.log("Winner:", winnerName);
-    
+
         fetch('../data/players.json')
             .then(response => response.json())
             .then(data => {
                 const players = data.players;
                 const player1 = players.find(player => player.name === player1Name);
-                const player2 = players.find(player -> player.name === player2Name);
+                const player2 = players.find(player => player.name === player2Name);
                 const initialMMR1 = player1.points;
                 const initialMMR2 = player2.points;
-    
+
                 const result1 = winnerName === player1Name ? 1 : 0;
                 const result2 = winnerName === player2Name ? 1 : 0;
-    
+
                 const { points1, points2 } = calculateMMRChange(initialMMR1, initialMMR2, result1, result2);
-    
+
                 player1.points += points1;
                 player2.points += points2;
                 player1.destructionPoints += destructionPoints1;
                 player2.destructionPoints += destructionPoints2;
                 player1.games++;
                 player2.games++;
-    
+
                 if (winnerName === player1Name) {
                     player1.wins++;
                     player2.losses++;
@@ -121,13 +121,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     player1.losses++;
                     player2.wins++;
                 }
-    
+
                 player1.winrate = (player1.wins / player1.games) * 100;
                 player2.winrate = (player2.wins / player2.games) * 100;
-    
+
                 console.log("Updated Player 1 MMR:", player1.points);
                 console.log("Updated Player 2 MMR:", player2.points);
-    
+
                 const newResult = {
                     player1: player1Name,
                     player2: player2Name,
@@ -139,9 +139,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     destructionPoints2,
                     winner: winnerName
                 };
-    
+
                 console.log("New result:", newResult);
-    
+
                 fetch('../data/results.json')
                     .then(response => response.json())
                     .then(resultsData => {
@@ -172,3 +172,32 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
             });
     }
+
+    function deleteLastResult() {
+        fetch('../data/results.json')
+            .then(response => response.json())
+            .then(resultsData => {
+                if (resultsData.results.length > 0) {
+                    resultsData.results.pop();
+                    return fetch('../data/results.json', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(resultsData)
+                    });
+                }
+            })
+            .then(() => {
+                const resultsTable = document.getElementById("results-table").getElementsByTagName('tbody')[0];
+                if (resultsTable.rows.length > 0) {
+                    resultsTable.deleteRow(resultsTable.rows.length - 1);
+                }
+            });
+    }
+
+    document.getElementById("match-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        submitMatch();
+    });
+});
