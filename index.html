@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liga Webseite</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Willkommen zu unserer Liga</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Startseite</a></li>
+                <li><a href="matchgenerator/matchgenerator.html">Matchgenerator</a></li>
+                <li><a href="spielergebnisse/index.html">Spielergebnisse</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="liga-tabelle">
+            <h2>Ligatabelle</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Spieler</th>
+                        <th>Armee</th>
+                        <th>Games</th>
+                        <th>Destruction Points</th>
+                        <th>Points</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Winrate</th>
+                    </tr>
+                </thead>
+                <tbody id="players-table">
+                    <!-- Dynamisch generierte Tabellenzeilen -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('data/players.json')
+                .then(response => response.json())
+                .then(data => {
+                    const players = data.players;
+                    const tableBody = document.getElementById('players-table');
+
+                    players.forEach(player => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${player.name}</td>
+                            <td>${player.army}</td>
+                            <td>${player.games}</td>
+                            <td>${player.destructionPoints}</td>
+                            <td>${player.points}</td>
+                            <td>${player.wins}</td>
+                            <td>${player.losses}</td>
+                            <td>${player.winrate}%</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                });
+        });
+    </script>
+</body>
+</html>

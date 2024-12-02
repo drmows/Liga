@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matchgenerator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Matchgenerator</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Startseite</a></li>
+                <li><a href="matchgenerator.html">Matchgenerator</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="match-generator">
+            <h2>Erstelle neue Matches</h2>
+            <form id="match-form">
+                <fieldset>
+                    <legend>Spieler auswählen</legend>
+                    <div id="spieler-auswahl">
+                        <!-- Dynamisch generierte Spielerauswahl -->
+                    </div>
+                    <button type="button" onclick="generateMatches()">Paarungen generieren</button>
+                </fieldset>
+            </form>
+            <section id="paarungen">
+                <h2>Paarungen</h2>
+                <ul id="paarungen-liste">
+                    <!-- Dynamisch generierte Paarungen -->
+                </ul>
+            </section>
+        </section>
+    </main>
+    <script src="matchgenerator.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spielergebnisse</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Spielergebnisse</h1>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Startseite</a></li>
+                <li><a href="../matchgenerator/matchgenerator.html">Matchgenerator</a></li>
+                <li><a href="index.html">Spielergebnisse</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="match-results">
+            <h2>Neue Spielergebnisse eintragen</h2>
+            <form id="match-form" onsubmit="submitMatch(); return false;">
+                <fieldset>
+                    <legend>Spieler auswählen</legend>
+                    <div>
+                        <label for="player1">Spieler 1:</label>
+                        <select id="player1">
+                            <!-- Dynamisch generierte Optionen -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="player2">Spieler 2:</label>
+                        <select id="player2">
+                            <!-- Dynamisch generierte Optionen -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="winner">Gewinner:</label>
+                        <select id="winner">
+                            <!-- Dynamisch generierte Optionen -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="destructionPoints1">Destruction Points Spieler 1:</label>
+                        <input type="number" id="destructionPoints1">
+                    </div>
+                    <div>
+                        <label for="destructionPoints2">Destruction Points Spieler 2:</label>
+                        <input type="number" id="destructionPoints2">
+                    </div>
+                    <button type="submit">Match eintragen</button>
+                    <button type="button" onclick="deleteLastResult()">Letztes Ergebnis löschen</button>
+                </fieldset>
+            </form>
+            <h2>Spielergebnisse Log</h2>
+            <table id="results-table">
+                <thead>
+                    <tr>
+                        <th>Spieler 1</th>
+                        <th>Spieler 2</th>
+                        <th>MMR Spieler 1 (vorher)</th>
+                        <th>MMR Spieler 2 (vorher)</th>
+                        <th>Punkteänderung Spieler 1</th>
+                        <th>Punkteänderung Spieler 2</th>
+                        <th>Destruction Points Spieler 1</th>
+                        <th>Destruction Points Spieler 2</th>
+                        <th>Gewinner</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamisch generierte Zeilen -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script src="spielergebnisse.js"></script>
+</body>
+</html>

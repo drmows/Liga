@@ -1,0 +1,64 @@
+{
+    "players": [
+        {
+            "name": "Aso",
+            "army": "Machine Cult",
+            "points": 1000,
+            "games": 0,
+            "destructionPoints": 0,
+            "wins": 0,
+            "losses": 0,
+            "winrate": 0
+        },
+        {
+            "name": "Art",
+            "army": "Alien Hives",
+            "points": 1000,
+            "games": 0,
+            "destructionPoints": 0,
+            "wins": 0,
+            "losses": 0,
+            "winrate": 0
+        },
+        {
+            "name": "Mow",
+            "army": "Prime Brothers",
+            "points": 1000,
+            "games": 0,
+            "destructionPoints": 0,
+            "wins": 0,
+            "losses": 0,
+            "winrate": 0
+        },
+        {
+            "name": "Rob",
+            "army": "Human Defense Force",
+            "points": 1000,
+            "games": 0,
+            "destructionPoints": 0,
+            "wins": 0,
+            "losses": 0,
+            "winrate": 0
+        },
+        {
+            "name": "Max",
+            "army": "High Elf Fleets",
+            "points": 1000,
+            "games": 0,
+            "destructionPoints": 0,
+            "wins": 0,
+            "losses": 0,
+            "winrate": 0
+        },
+        {
+            "name": "Rom",
+            "army": "Robot Legions",
+            "points": 1000,
+            "games": 0,
+            "destructionPoints": 0,
+            "wins": 0,
+            "losses": 0,
+            "winrate": 0
+        }
+    ]
+}
