@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // MongoDB-Verbindung
-mongoose.connect('mongodb://localhost:27017/liga', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://ickwesanders:ZVH7LSLfpftbcd4s@cluster0.khisw.mongodb.net/liga?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Schema und Model
 const ResultSchema = new mongoose.Schema({
