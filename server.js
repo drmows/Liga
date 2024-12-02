@@ -1,31 +1,42 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const connectToDatabase = require('./db');
-const savePlayerResult = require('./savePlayers');
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
-app.get('/api/players', async (req, res) => {
-  const db = await connectToDatabase();
-  const players = await db.collection('players').find().toArray();
-  res.json({ players });
+// MongoDB-Verbindung
+mongoose.connect('mongodb://localhost:27017/liga', { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Schema und Model
+const ResultSchema = new mongoose.Schema({
+    player1: String,
+    player2: String,
+    initialMMR1: Number,
+    initialMMR2: Number,
+    points1: Number,
+    points2: Number,
+    destructionPoints1: Number,
+    destructionPoints2: Number,
+    winner: String
 });
 
-app.post('/api/results', async (req, res) => {
-  const result = req.body;
-  await savePlayerResult(result.player, result.score);
-  res.status(201).json({ message: 'Result saved successfully' });
+const Result = mongoose.model('Result', ResultSchema);
+
+// POST-Route
+app.post('/results', async (req, res) => {
+    try {
+        const newResult = new Result(req.body);
+        await newResult.save();
+        res.status(201).send(newResult);
+    } catch (error) {
+        res.status(400).send(error);
+    }
 });
 
-app.delete('/api/results', async (req, res) => {
-  const resultId = req.body._id;
-  const db = await connectToDatabase();
-  const collection = db.collection('player_results');
-  await collection.deleteOne({ _id: resultId });
-  res.status(200).json({ message: 'Result deleted successfully' });
-});
-
+// Server starten
 app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+    console.log('Server running on port 3000');
 });
