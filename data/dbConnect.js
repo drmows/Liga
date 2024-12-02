@@ -9,7 +9,7 @@ async function connectToDatabase() {
     client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
   }
-  return client.db('liga'); // Ersetze 'YOUR_DATABASE_NAME' durch den tatsächlichen Datenbanknamen
+  return client.db('sample_mflix'); // Ersetze 'YOUR_DATABASE_NAME' durch den tatsächlichen Datenbanknamen
 }
 
 module.exports = connectToDatabase;
